@@ -13,7 +13,10 @@
 const uint8_t LookupTables::RI_TO_TEMP_C_OFFSET = 113;
 const uint8_t LookupTables::RI_TO_TEMP_C_INDEX_LAST = 74;
 //
-const uint16_t LookupTables::RI_TO_TEMP_C[] PROGMEM =
+#ifdef USE_PROGMEM
+PROGMEM
+#endif
+const uint16_t LookupTables::RI_TO_TEMP_C[]  =
 {
 		820, 818, 817, 815, 814, 813, 811, 810, 808, 807, 805, 804, 803, 801, 800, 799, 798, 796, 795,
 		794, 792, 791, 790, 789, 788, 786, 785, 784, 783, 782, 781, 780, 779, 777, 776, 775, 774, 773,
@@ -25,10 +28,12 @@ const uint16_t LookupTables::RI_TO_TEMP_C[] PROGMEM =
 
 // Lookup table to convert LSU pump current to lambda
 // const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA_OFFSET = 0;
- const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST = 408;
+const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST = 408;
 //
-
-const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA[] PROGMEM =
+#ifdef USE_PROGMEM
+PROGMEM
+#endif
+const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA[] =
 {
 		376, 379, 381, 384, 387, 390, 393, 395, 398, 401, 403, 406, 409, 411, 414, 417, 419, 422, 424,
 		427, 430, 432, 435, 437, 440, 442, 445, 447, 450, 452, 455, 457, 460, 462, 464, 467, 469, 472,
@@ -64,7 +69,11 @@ uint16_t LookupTables::GetLambda(const uint16_t &pump_current)
 	}
 
 	// Divide by 1000 to get actual float value for the lambda reading
+#ifdef USE_PROGMEM
 	return pgm_read_word_near(&LSU_PUMP_CURRENT_TO_LAMBDA[index]);
+#else
+	return LSU_PUMP_CURRENT_TO_LAMBDA[index];
+#endif
 };
 
 uint16_t LookupTables::GetTemperatureC(const uint8_t &ri)
@@ -79,6 +88,9 @@ uint16_t LookupTables::GetTemperatureC(const uint8_t &ri)
 	{
 		index = RI_TO_TEMP_C_INDEX_LAST;
 	}
-
+#ifdef USE_PROGMEM
 	return pgm_read_word_near(&RI_TO_TEMP_C[index]);
+#else
+	return RI_TO_TEMP_C[index];
+#endif
 }
