@@ -11,16 +11,20 @@
  * please read the last page of the Spartam_2_OEM_I2C Manual
  */
 
-//const uint8_t Spartan2OEM::I2C_RESPONSE_LENGTH   = 6;
-//const uint8_t Spartan2OEM::I2C_RW_CMD            = 0;
-//const uint8_t Spartan2OEM::I2C_SLAVE_ADDRESS_MIN = 1;
-//const uint8_t Spartan2OEM::I2C_SLAVE_ADDRESS_MAX = 16;
-
+const uint8_t Spartan2OEM::I2C_RESPONSE_LENGTH   = 6;
+const uint8_t Spartan2OEM::I2C_RW_CMD            = 0;
+const uint8_t Spartan2OEM::I2C_SLAVE_MIN_ADDRESS = 1;
+const uint8_t Spartan2OEM::I2C_SLAVE_MAX_ADDRESS = 16;
 
 Spartan2OEM::Spartan2OEM(TwoWire* i2c_bus, const uint8_t &i2c_address)
 {
 	this->i2c_bus     = i2c_bus;
 	this->i2c_address = i2c_address;
+	this->data_available = false;
+	this->lambda = 0;
+	this->temperature_c = 0;
+	this->version_hs = 0;
+	this->timeout_ms = 0;
 }
 
 bool Spartan2OEM::ChangeI2CAddress(const uint8_t &new_address)
@@ -48,76 +52,71 @@ bool Spartan2OEM::RequestData()
 	memset(rx_buffer, 0, sizeof(rx_buffer));
 
 	uint8_t index = 0;
-	while (i2c_bus->available() & index < I2C_RESPONSE_LENGTH) //Dump the I2C data into an Array
+	while (i2c_bus->available() && index < I2C_RESPONSE_LENGTH) //Dump the I2C data into an Array
 	{
 		rx_buffer[index] = i2c_bus->read();
 		++index;
 	}
 
-	return (I2C_RESPONSE_LENGTH == index) ? true : false;
+	data_available = (I2C_RESPONSE_LENGTH == index);
+	return data_available;
 }
 
-bool Spartan2OEM::ProcessData()
+void Spartan2OEM::ProcessData()
 {
-	uint8_t i2c_addr        = rx_buffer[0];
-	uint8_t id8             = rx_buffer[1];
-	uint16_t pump_current16 = (rx_buffer[2] << 8) + rx_buffer[3];
-	uint8_t ri              = rx_buffer[4];
-	uint8_t status8         = rx_buffer[5];
-
-	uint8_t i = pump_current16 - Pump_Current16_to_Lambda_Start;
-	if (i > (Pump_Current16_to_Lambda_Size - 1))
+	if (data_available)
 	{
-		i = Pump_Current16_to_Lambda_Size - 1;
+		uint8_t i2c_addr        = rx_buffer[0];
+		version_hs              = rx_buffer[1];
+		uint16_t pump_current16 = (rx_buffer[2] << 8) + rx_buffer[3];
+		uint8_t ri              = rx_buffer[4];
+		uint8_t status8         = rx_buffer[5];
+
+		lambda = LookupTables::GetLambda(pump_current16);
+		temperature_c = LookupTables::GetTemperatureC(ri);
+
+		data_available = false;
 	}
-
-	//use Pump_Current16 as index to Pump_Current16_to_Lambda lookup table and then Divide by 1000 to get actual Lambda
-	float labda = ((float)pgm_read_word_near(Pump_Current16_to_Lambda + i)) / 1000;
-
-
-	// Index has to be justified to the right by Ri_to_Temperature_C_Start
-	i = ri - Ri_to_Temperature_C_Start;
-	if (i > (Ri_to_Temperature_C_Size-1))
-	{
-		i = Ri_to_Temperature_C_Size-1;
-	}
-
-	uint16_t temperature_c = pgm_read_word_near(Ri_to_Temperature_C + i);
-
-	return true;
 }
 
 float Spartan2OEM::Lambda() const
 {
-
+	return (float)lambda / (float)1000;
 }
 
 float Spartan2OEM::AfrRatio() const
 {
-
+	// 14.7 AFR = 1 lambda
+	return Lambda() * 14.7;
 }
 
 uint16_t Spartan2OEM::TemperatureC() const
 {
-
+	return temperature_c;
 }
 
+//TODO: Check the type conversion
 uint16_t Spartan2OEM::TemperatureF() const
 {
+	return temperature_c * 1.8 + 32;
+}
 
+uint8_t Spartan2OEM::Version() const
+{
+	return version_hs;
 }
 
 uint8_t Spartan2OEM::Status() const
 {
-
+	return 0;
 }
 
 void Spartan2OEM::SetTimeot(const uint16_t &millis)
 {
-	this->timeoutMs = millis;
+	this->timeout_ms = millis;
 }
 
 uint16_t Spartan2OEM::Timeout() const
 {
-	return timeoutMs;
+	return timeout_ms;
 }

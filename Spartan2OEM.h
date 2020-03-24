@@ -12,7 +12,7 @@ public:
 
 	bool ChangeI2CAddress(const uint8_t &new_address);
 	bool RequestData();
-	bool ProcessData();
+	void ProcessData();
 
 	float Lambda() const;
 	float AfrRatio() const;
@@ -24,17 +24,22 @@ public:
 
 	void SetTimeot(const uint16_t &millis);
 	uint16_t Timeout() const;
+	uint8_t Version() const;
 
 private:
-	static const uint8_t I2C_RESPONSE_LENGTH   = 6;
-	static const uint8_t I2C_RW_CMD            = 0;
-	static const uint8_t I2C_SLAVE_MIN_ADDRESS = 1;
-	static const uint8_t I2C_SLAVE_MAX_ADDRESS = 16;
+	static const uint8_t I2C_RESPONSE_LENGTH;
+	static const uint8_t I2C_RW_CMD;
+	static const uint8_t I2C_SLAVE_MIN_ADDRESS;
+	static const uint8_t I2C_SLAVE_MAX_ADDRESS;
 
 	uint8_t rx_buffer[10];
 	uint8_t i2c_address;
-	uint16_t timeoutMs;
+	uint16_t timeout_ms;
 	TwoWire *i2c_bus;
+	uint16_t lambda;
+	uint16_t temperature_c;
+	bool data_available;
+	uint8_t version_hs;
 
 };
 
