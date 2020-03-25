@@ -1,4 +1,4 @@
-# Spartan2OEM
+# Spartan 2 OEM
 
 An Arduino library for the Spartan2 OEM I2C wideband controller.\
 Based on the examples provided by Alan To (www.14point7.com). The developer of the Spartan2 OEM.\
