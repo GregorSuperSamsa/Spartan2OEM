@@ -1,7 +1,6 @@
 #include "LookupTables.h"
 
-
-// Uncomment to store lookup tables in progmem
+// Uncomment to store lookup tables in PROGMEM
 #define USE_PROGMEM
 
 #ifdef USE_PROGMEM
@@ -23,7 +22,6 @@ const uint16_t LookupTables::RI_TO_TEMP_C[]  =
 		772, 771, 770, 769, 768, 767, 766, 765, 764, 763, 762, 761, 760, 759, 758, 758, 757, 756, 755,
 		754, 753, 752, 751, 751, 750, 749, 748, 747, 746, 745, 745, 744, 743, 742, 741, 741, 740
 };
-
 
 
 // Lookup table to convert LSU pump current to lambda
@@ -60,7 +58,7 @@ const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA[] =
 		10106, 10713, 11394, 12167, 13050, 14068, 15256, 16659, 18342, 20399, 22967, 26268, 30664, 36811, 46012, 61299
 };
 
-uint16_t LookupTables::GetLambda(const uint16_t &pump_current)
+uint16_t LookupTables::GetLambda1000(const uint16_t &pump_current)
 {
 	uint16_t index = pump_current;
 	if (index > LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST)
