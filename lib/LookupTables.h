@@ -2,17 +2,16 @@
 #define _LOOKUP_TABLES_H_
 
 #include <Arduino.h>
-#include "Spartan2OEM.h"
+
 
 class LookupTables
 {
-	friend Spartan2OEM;
 
-private:
+public:
 	static uint16_t GetLambda1000(const uint16_t &pump_current);
 	static uint16_t GetTemperatureC(const uint8_t &ri);
 
-protected:
+private:
 	// Lookup table to convert LSU pump current to lambda
 	// static const uint16_t LSU_PUMP_CURRENT_TO_LAMBDA_OFFSET;
 	static const uint16_t LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST;
@@ -23,4 +22,5 @@ protected:
 	static const uint8_t RI_TO_TEMP_C_INDEX_LAST;
 	static const uint16_t RI_TO_TEMP_C[];
 };
+
 #endif
