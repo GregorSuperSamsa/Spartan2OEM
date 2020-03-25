@@ -1,3 +1,13 @@
 # Spartan2OEM
-Arduino library to interface the 14point7 Spartan 2 OEM i2c modules. Based on the official demo code provided by Alan To, the creator of the Spartan products.
+
+An Arduino library for the Spartan2 OEM I2C wideband controller.
+Based on the examples provided by Alan To (www.14point7.com). The developer of the Spartan2 OEM.
+
+Communication protocol is I2C.
+
+Connect Arduino SDA to Spartam2 OEM SDA
+Connect Arduino SLC to Spartam2 OEM SCL
+Both SDA and SLC lines require 4.7k pull-up resistors.
+
+For additional information, please, refer to the Spartan2 OEM I2C manual
 
