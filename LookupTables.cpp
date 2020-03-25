@@ -61,6 +61,7 @@ const uint16_t LookupTables::LSU_PUMP_CURRENT_TO_LAMBDA[] =
 uint16_t LookupTables::GetLambda1000(const uint16_t &pump_current)
 {
 	uint16_t index = pump_current;
+
 	if (index > LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST)
 	{
 		index = LSU_PUMP_CURRENT_TO_LAMBDA_INDEX_LAST;
@@ -81,11 +82,13 @@ uint16_t LookupTables::GetTemperatureC(const uint8_t &ri)
 	if (ri > RI_TO_TEMP_C_OFFSET)
 	{
 		index = ri - RI_TO_TEMP_C_OFFSET;
+
+		if (index > RI_TO_TEMP_C_INDEX_LAST)
+		{
+			index = RI_TO_TEMP_C_INDEX_LAST;
+		}
 	}
-	if (index > RI_TO_TEMP_C_INDEX_LAST)
-	{
-		index = RI_TO_TEMP_C_INDEX_LAST;
-	}
+
 #ifdef USE_PROGMEM
 	return pgm_read_word_near(&RI_TO_TEMP_C[index]);
 #else
