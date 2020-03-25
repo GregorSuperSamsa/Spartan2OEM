@@ -8,15 +8,15 @@ const uint8_t Spartan2OEM::I2C_SLAVE_DEFAULT_ADDRESS = 0;
 const uint8_t Spartan2OEM::I2C_SLAVE_MIN_ADDRESS     = 1;
 const uint8_t Spartan2OEM::I2C_SLAVE_MAX_ADDRESS     = 16;
 
-Spartan2OEM::Spartan2OEM(TwoWire* i2c_bus, const uint8_t &i2c_address)
+Spartan2OEM::Spartan2OEM()
+{
+}
+
+void Spartan2OEM::Initialize(TwoWire* i2c_bus, const uint8_t &i2c_address)
 {
 	this->i2c_bus        = i2c_bus;
 	this->i2c_address    = i2c_address;
-	this->lambda1000     = 0;
-	this->temperature_c  = 0;
-	this->version_hs     = 0;
-	this->timeout_ms     = 0;
-	this->data_available = false;
+	initialized = true;
 }
 
 bool Spartan2OEM::ChangeI2CAddress(const uint8_t &new_address)
@@ -38,44 +38,51 @@ bool Spartan2OEM::ChangeI2CAddress(const uint8_t &new_address)
 
 bool Spartan2OEM::RequestData()
 {
-	i2c_bus->beginTransmission(i2c_address); // Setup communication with device @ I2C Address
-	i2c_bus->write(I2C_RW_CMD);              // Tell Spartan2 OEM that we want to start a read from memory address 0
-	i2c_bus->endTransmission();              // End transmission
-
-	// Request 6 bytes from Spartan2 OEM
-	i2c_bus->requestFrom(i2c_address, I2C_RESPONSE_LENGTH);
-
-	// Clear rx buffer
-	memset(rx_buffer, 0, sizeof(rx_buffer));
-
-	// Save data to rx buffer
-	uint8_t received = 0;
-	while (i2c_bus->available() && received < I2C_RESPONSE_LENGTH)
+	if (initialized)
 	{
-		rx_buffer[received] = i2c_bus->read();
-		++received;
-	}
+		i2c_bus->beginTransmission(i2c_address); // Setup communication with device @ I2C Address
+		i2c_bus->write(I2C_RW_CMD);              // Tell Spartan2 OEM that we want to start a read from memory address 0
+		i2c_bus->endTransmission();              // End transmission
 
-	// Flag notifying that new data is available
-	data_available = (I2C_RESPONSE_LENGTH == received);
+		// Request 6 bytes from Spartan2 OEM
+		i2c_bus->requestFrom(i2c_address, I2C_RESPONSE_LENGTH);
+
+		// Clear rx buffer
+		memset(rx_buffer, 0, sizeof(rx_buffer));
+
+		// Save data to rx buffer
+		uint8_t received = 0;
+		while (i2c_bus->available() && received < I2C_RESPONSE_LENGTH)
+		{
+			rx_buffer[received] = i2c_bus->read();
+			++received;
+		}
+
+		data_available = (I2C_RESPONSE_LENGTH == received);
+	}
+	else
+	{
+		data_available = false;
+	}
 
 	return data_available;
 }
 
 void Spartan2OEM::ProcessData()
 {
-	if (data_available)
+	if (initialized)
 	{
-		//uint8_t i2c_addr        = rx_buffer[0];
-		version_hs              = rx_buffer[1];
-		uint16_t pump_current16 = (rx_buffer[2] << 8) + rx_buffer[3];
-		uint8_t ri              = rx_buffer[4];
-		//uint8_t status8         = rx_buffer[5];
+		if (data_available)
+		{
+			//uint8_t i2c_addr        = rx_buffer[0];
+			version_hs              = rx_buffer[1];
+			uint16_t pump_current16 = (rx_buffer[2] << 8) + rx_buffer[3];
+			uint8_t ri              = rx_buffer[4];
+			//uint8_t status8         = rx_buffer[5];
 
-		lambda1000    = LookupTables::GetLambda1000(pump_current16);
-		temperature_c = LookupTables::GetTemperatureC(ri);
-
-		data_available = false;
+			lambda1000    = LookupTables::GetLambda1000(pump_current16);
+			temperature_c = LookupTables::GetTemperatureC(ri);
+		}
 	}
 }
 
@@ -119,4 +126,10 @@ void Spartan2OEM::SetTimeot(const uint16_t &millis)
 uint16_t Spartan2OEM::Timeout() const
 {
 	return timeout_ms;
+}
+
+//TODO:
+bool Spartan2OEM::NewData() const
+{
+	return initialized;
 }

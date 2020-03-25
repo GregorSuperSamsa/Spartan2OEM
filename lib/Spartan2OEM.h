@@ -27,7 +27,10 @@
 class Spartan2OEM
 {
 public:
-	Spartan2OEM(TwoWire* i2c_bus, const uint8_t &i2c_address);
+	Spartan2OEM();
+
+	// Setup device
+	void Initialize(TwoWire* i2c_bus, const uint8_t &i2c_address);
 
 	// Please, read the provided Spartan2 OEM documentation
 	bool ChangeI2CAddress(const uint8_t &new_address);
@@ -37,6 +40,8 @@ public:
 
 	// Process read data
 	void ProcessData();
+
+	bool NewData() const;
 
 	// Get sensor reading in Lambda or AFR
 	float Lambda() const;
@@ -64,29 +69,31 @@ private:
 	static const uint8_t I2C_SLAVE_MAX_ADDRESS;
 
 	// Pointer to the i2c interface
-	TwoWire *i2c_bus;
+	TwoWire *i2c_bus = nullptr;
 
 	// Local buffer for the received i2c data
 	uint8_t rx_buffer[10];
 
 	// Current i2c address for the Spartan2OEM device
-	uint8_t i2c_address;
+	uint8_t i2c_address = 0;
 
 	// Current lambda reading * 1000
-	uint16_t lambda1000;
+	uint16_t lambda1000 = 0;
 
 	// Current temperature reading of the sensor [C]
-	uint16_t temperature_c;
+	uint16_t temperature_c = 0;
 
 	// Flag for new i2c data available
-	bool data_available;
+	bool data_available = false;
+
+	// Flag for the Spartan2OEM object initialization
+	bool initialized = false;
 
 	// Current Spartan2OEM hardware & software versions
-	uint8_t version_hs;
+	uint8_t version_hs = 0;
 
 	// Currently not used
-	uint16_t timeout_ms;
-
+	uint16_t timeout_ms = 0;
 };
 
 #endif
