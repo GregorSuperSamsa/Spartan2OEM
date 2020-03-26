@@ -103,10 +103,9 @@ uint16_t Spartan2OEM::TemperatureC() const
 	return temperature_c;
 }
 
-//TODO: Check the type conversion
 uint16_t Spartan2OEM::TemperatureF() const
 {
-	return temperature_c * 1.8 + 32;
+	return (uint16_t)round((float)temperature_c * 1.8 + 32.0);
 }
 
 uint8_t Spartan2OEM::Version() const
