@@ -8,16 +8,16 @@ This Arduino library is based on the examples provided by Alan To at [14point7](
 ### Hardware requirements
 Connect Arduino SDA to Spartan 2 OEM SDA.\
 Connect Arduino SLC to Spartan 2 OEM SCL.\
-Both SDA and SLC lines require 4.7k pull-up resistors.\
+Both SDA and SLC lines require 4.7k pull-up resistors.
 
 ### Usage
 
-Create object of type Spartan 2 OEM
+Create object of type Spartan 2 OEM:
 ```
 Spartan2OEM::Spartan2OEM();
 ```
 
-Initialize the library instance with a pointer to the Wire library and the I2C address of the slave device 
+Initialize the library instance with a pointer to the Wire library and the I2C address of the slave device:
 ```
 void Spartan2OEM::Initialize(TwoWire* i2c_bus, const uint8_t &i2c_address);
 ```
