@@ -52,7 +52,7 @@ Get sensor temperature in degrees Fahrenheit:
 uint16_t Spartan2OEM::TemperatureF() const;
 ```
 
-Change slave I2C address:
+Change slave I2C address:\
 ***Please, refer to the Spartan 2 OEM I2C manual for enabling this functionality***
 ```
 bool Spartan2OEM::ChangeI2CAddress(const uint8_t &new_address);
