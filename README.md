@@ -1,9 +1,9 @@
 # Spartan 2 OEM I2C
 ![alt text](https://raw.githubusercontent.com/GregorSuperSamsa/Spartan2OEM/master/documentation/Spartan2_OEM.png)\
 \
-Spartan 2 OEM I2C is a low-cost, miniature Wideband O2 Controller with I2C communication. Up to 16 devices may be addressed on a single bus. 
+Spartan 2 OEM I2C is a low-cost, miniature Wideband O2 Controller with I2C communication. Up to 16 devices may be addressed on a single bus.\
 \
-Provided Arduino library is based on the examples provided by Alan To (www.14point7.com). The developer of the Spartan2 OEM I2C.\
+This Arduino library is based on the examples provided by Alan To (www.14point7.com). The developer of the Spartan2 OEM I2C.\
 \
 ## Hardware requirements
 Connect Arduino SDA to Spartan 2 OEM SDA.\
