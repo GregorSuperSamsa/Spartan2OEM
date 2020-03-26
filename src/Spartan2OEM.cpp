@@ -88,7 +88,8 @@ void Spartan2OEM::ProcessData()
 
 float Spartan2OEM::Lambda() const
 {
-	return (float)lambda1000 / (float)1000;
+	// Integer lookup table lambda / 1000
+	return (float)lambda1000 * 0.001;
 }
 
 float Spartan2OEM::AfrRatio() const
@@ -128,7 +129,7 @@ uint16_t Spartan2OEM::Timeout() const
 	return timeout_ms;
 }
 
-//TODO:
+//TODO: Organize smarter flags
 bool Spartan2OEM::NewData() const
 {
 	return initialized;
