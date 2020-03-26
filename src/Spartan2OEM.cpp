@@ -2,6 +2,12 @@
 #include "LookupTables.h"
 
 
+// Uncomment to set I2C bus speed to 400kHz.
+// This is the official speed of the Spartan 2 0EM I2C devices
+// *Note that this speed my not be supported by the used Arduino device!
+#define I2C_FAST_MODE
+
+
 const uint8_t Spartan2OEM::I2C_RESPONSE_LENGTH       = 6;
 const uint8_t Spartan2OEM::I2C_RW_CMD                = 0;
 const uint8_t Spartan2OEM::I2C_SLAVE_DEFAULT_ADDRESS = 0;
@@ -14,8 +20,14 @@ Spartan2OEM::Spartan2OEM()
 
 void Spartan2OEM::Initialize(TwoWire* i2c_bus, const uint8_t &i2c_address)
 {
-	this->i2c_bus        = i2c_bus;
 	this->i2c_address    = i2c_address;
+	this->i2c_bus        = i2c_bus;
+
+	// Change I2C speed to 400kHz
+#ifdef I2C_FAST_MODE
+	this->i2c_bus->setClock(400000L);
+#endif
+
 	initialized = true;
 }
 

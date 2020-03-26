@@ -1,6 +1,6 @@
 #include "LookupTables.h"
 
-// Uncomment to store lookup tables in PROGMEM
+// Uncomment to store the lookup tables in PROGMEM
 #define USE_PROGMEM
 
 #ifdef USE_PROGMEM
@@ -8,7 +8,7 @@
 #endif
 
 
-//Lookup table to convert Ri (nernst resistance) to sensor temperature[C]
+// Lookup table to convert Ri (nernst resistance) to sensor temperature[C]
 const uint8_t LookupTables::RI_TO_TEMP_C_OFFSET = 113;
 const uint8_t LookupTables::RI_TO_TEMP_C_INDEX_LAST = 74;
 //
