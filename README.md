@@ -9,5 +9,5 @@ Connect Arduino SDA to Spartan 2 OEM SDA\
 Connect Arduino SLC to Spartan 2 OEM SCL\
 Both SDA and SLC lines require 4.7k pull-up resistors.\
 \
-For additional information, please, refer to the Spartan2 OEM I2C manual
+For additional information, please, refer to the Spartan 2 OEM I2C manual
 
